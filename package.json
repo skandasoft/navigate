@@ -1,0 +1,16 @@
+{
+  "name": "navigate",
+  "main": "./lib/navigate",
+  "version": "0.0.1",
+  "description": "Navigate FORWARD & Backward",
+  "repository": "https://github.com/atom/navigate",
+  "license": "MIT",
+  "engines": {
+    "atom": ">0.50.0"
+  },
+  "dependencies": {
+    "findup-sync": "~0.2.1",
+    "fuse.js": "~1.2.2",
+    "glob": "~4.3.5"
+  }
+}
