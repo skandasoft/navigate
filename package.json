@@ -3,7 +3,7 @@
   "main": "./lib/navigate",
   "version": "0.0.1",
   "description": "Navigate FORWARD & Backward",
-  "repository": "https://github.com/atom/navigate",
+  "repository": "https://github.com/skandasoft/navigate",
   "license": "MIT",
   "engines": {
     "atom": ">0.50.0"
