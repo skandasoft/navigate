@@ -22,7 +22,7 @@ module.exports =
       view.ondblclick = =>@forward()
 
   forward: ->
-      @modalPanel.show()
+      # @modalPanel.show()
       editor = atom.workspaceView.getActivePaneItem()
       cursor = editor.cursors[0].getBufferPosition()
       startRange = new Range new Point(cursor.row,0), cursor
