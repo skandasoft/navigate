@@ -1,4 +1,4 @@
-# navigate package
+# Navigate
 
 Navigate FORWARD & Backward
 
