@@ -4,7 +4,6 @@ class NavigateView
     # Create root element
     @element = document.createElement('div')
     @element.classList.add('navigate')
-    debugger
     @element.style.textAlign = 'center'
     # Create message element
     loading = document.createElement('span')
