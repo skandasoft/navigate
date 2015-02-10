@@ -9,4 +9,5 @@
 # https://atom.io/docs/latest/advanced/keymaps
 '.platform-win32 atom-text-editor:not(.mini)':
   'f2': 'navigate:forward'
+  'f4': 'navigate:forward-new'
   'f3': 'navigate:back'

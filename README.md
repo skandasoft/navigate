@@ -16,9 +16,13 @@ if you just wanted to refresh a single path select the path and type navigate:re
 KeyPress
 ________
 
-F2/DoubleClick to navigate forward to the file.
+F2/DoubleClick to navigate forward to the file(uses same window).
+
+F4 - To open in a new window.
 
 F3 to navigate backward.
+
+
 
 
 ![navigate](https://github.com/skandasoft/navigate/blob/master/navigate.gif?raw=true)

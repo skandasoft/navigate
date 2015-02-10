@@ -12,6 +12,7 @@ module.exports =
 
   activate: (state) ->
     @pathCache = state['pathCache'] or {}
+    @new = false
     # Events subscribed to in atom's system can be easily cleaned up with a CompositeDisposable
     @subscriptions = new CompositeDisposable
     @loading = new NavigateView()
@@ -19,6 +20,9 @@ module.exports =
     @navi = {}
     atom.workspaceView.command 'navigate:back', 'atom-text-editor', =>@back()
     atom.workspaceView.command 'navigate:forward', 'atom-text-editor', =>@forward()
+    atom.workspaceView.command 'navigate:forward-new', 'atom-text-editor', =>
+        @new = true
+        @forward()
     atom.workspaceView.command 'navigate:refresh', 'atom-text-editor', =>@refresh()
     atom.workspace.observeTextEditors (editor)=>
       view = atom.views.getView(editor)
@@ -32,7 +36,6 @@ module.exports =
       @pathCache[atom.project.path] = {}
 
   forward: ->
-
       editor = atom.workspaceView.getActivePaneItem()
       cursor = editor.cursors[0].getBufferPosition()
       startRange = new Range new Point(cursor.row,0), cursor
@@ -109,13 +112,16 @@ module.exports =
 
   open: (url,editor,back=false)->
       @modalPanel.hide()
-      if editor.isModified()
-        if editor.shouldPromptToSave()
-          it = atom.workspace.getActivePaneItem()
-          pane = atom.workspace.getActivePane()
-          return unless pane.promptToSaveItem(it)
-        else
-          editor.save()
+      if @new
+        @new = false
+      else
+        if editor.isModified()
+          if editor.shouldPromptToSave()
+            it = atom.workspace.getActivePaneItem()
+            pane = atom.workspace.getActivePane()
+            return unless pane.promptToSaveItem(it)
+          else
+            editor.save()
       atom.workspace.open url[0]
         .then (ed)=>
           ed.setCursorScreenPosition(url[1]) if url[1]
