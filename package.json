@@ -1,7 +1,7 @@
 {
   "name": "navigate",
   "main": "./lib/navigate",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Navigate FORWARD & Backward",
   "repository": "https://github.com/skandasoft/navigate",
   "license": "MIT",
@@ -13,7 +13,7 @@
     "glob": "~4.3.5",
     "resolve": "~1.1.0"
   },
-  "keywords":[
+  "keywords": [
     "Jump to File",
     "Forward",
     "Drilldown",
