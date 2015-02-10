@@ -23,8 +23,8 @@ F4 - To open in a new window.
 F3 to navigate backward.
 
 
-
-
 ![navigate](https://github.com/skandasoft/navigate/blob/master/navigate.gif?raw=true)
+
+Navigating into local node modules in the same window
 
 ![localnodemoudules](https://github.com/skandasoft/navigate/blob/master/nodemodules.gif?raw=true)
