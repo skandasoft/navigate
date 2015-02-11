@@ -2,7 +2,7 @@
   "name": "navigate",
   "main": "./lib/navigate",
   "version": "0.0.5",
-  "description": "Navigate FORWARD & Backward",
+  "description": "Jump to any file/Back(f2/f3)",
   "repository": "https://github.com/skandasoft/navigate",
   "license": "MIT",
   "engines": {
