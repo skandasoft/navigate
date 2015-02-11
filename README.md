@@ -1,8 +1,6 @@
-# Navigate
+# Jump to any file by dbl clicking(f2) even if it is not on the path and jump back(f3) with support for Node Modules. Simple!!!
 
-Navigate FORWARD & Backward - Drill your way in to the file..any level!!!!!!!!!!
-
-Jump to any file by double clicking(f2) on the path and jump back(f3). Simple!!!
+Drill your way in to the file..any level!!!!!!!!!!
 
 **Special support for npm modules..Jump straight to locally installed module by clicking on the require**
 
