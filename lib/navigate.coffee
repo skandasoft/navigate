@@ -9,8 +9,14 @@ resolve = require 'resolve'
 module.exports =
   navigateView: null
   subscriptions: null
+  config:
+    dblclick:
+      title: 'New Window'
+      type: 'boolean'
+      default: false
 
   activate: (state) ->
+    console.log 'Project State ',state
     @pathCache = state['pathCache'] or {}
     @new = false
     # Events subscribed to in atom's system can be easily cleaned up with a CompositeDisposable
@@ -19,21 +25,27 @@ module.exports =
     @modalPanel = atom.workspace.addModalPanel item:@loading.getElement(), visible:false
     @navi = {}
     atom.workspaceView.command 'navigate:back', 'atom-text-editor', =>@back()
-    atom.workspaceView.command 'navigate:forward', 'atom-text-editor', =>@forward()
+    atom.workspaceView.command 'navigate:forward', 'atom-text-editor', =>
+      @new = atom.config.get('navigate.dblclick')
+      @forward()
+
     atom.workspaceView.command 'navigate:forward-new', 'atom-text-editor', =>
         @new = true
         @forward()
     atom.workspaceView.command 'navigate:refresh', 'atom-text-editor', =>@refresh()
     atom.workspace.observeTextEditors (editor)=>
       view = atom.views.getView(editor)
-      view.ondblclick = =>@forward()
+      view.ondblclick = =>
+        @new = atom.config.get('navigate.dblclick')
+        @forward()
 
   refresh: ->
     ed = atom.workspace.getActiveTextEditor()
+    projectPath = atom.project.getPath()
     if text = ed?.getSelectedText()
-      delete @pathCache[atom.project.path]?[text]
+      delete @pathCache[projectPath]?[text]
     else
-      @pathCache[atom.project.path] = {}
+      @pathCache[projectPath] = {}
 
   forward: ->
       editor = atom.workspaceView.getActivePaneItem()
@@ -56,19 +68,25 @@ module.exports =
           ext = path.extname editor.getPath()
           url = fpath+'/'+@uri
           @modalPanel.show()
+          projectPath = atom.project.getPath()
           fs.exists url, (exists)=>
             if exists
               @open([url],editor)
             else
               filename = path.basename(@uri)
-              if ofname = @pathCache[atom.project.path]?[@uri]
+              if ofname = @pathCache[projectPath]?[@uri]
                 @open([ofname],editor)
               else
                 globSearch = =>
-                    glob "**/*#{filename}*",{cwd:atom.project.path,stat:false,nocase:true,nodir:true}, (err,files)=>
+                    glob "**/*#{filename}*",{cwd:projectPath,stat:false,nocase:true,nodir:true}, (err,files)=>
                       if err or not files.length
-                        fpaths = findup filename,{cwd:atom.project.path,nocase:true}
+                        fpaths = findup filename,{cwd:projectPath,nocase:true}
                         if fpaths
+                          stats = fs.lstatSync(fpaths)
+                          if not stats or stats.isDirectory() or stats.isSymbolicLink()
+                            console.log 'Found Path but it is directory',fpaths
+                            @modalPanel.hide()
+                            return
                           @matchFile(@uri,ext,fpaths,editor)
                         else
                           @modalPanel.hide()
@@ -77,9 +95,8 @@ module.exports =
                 try
                   @complex = true
                   unless path.extname filename
-                    if filepath = resolve.sync(filename,basedir:atom.project.path)
-                      fs.exists filepath, (exists)=>
-                        if exists
+                    if filepath = resolve.sync(filename,basedir:projectPath)
+                      if fs.statsSync filepath
                           @open([filepath],editor)
                           return
 
@@ -112,9 +129,7 @@ module.exports =
 
   open: (url,editor,back=false)->
       @modalPanel.hide()
-      if @new
-        @new = false
-      else
+      unless @new
         if editor.isModified()
           if editor.shouldPromptToSave()
             it = atom.workspace.getActivePaneItem()
@@ -124,14 +139,15 @@ module.exports =
             editor.save()
       atom.workspace.open url[0]
         .then (ed)=>
+          projectPath = atom.project.getPath()
           ed.setCursorScreenPosition(url[1]) if url[1]
           @navi["#{ed.getPath()}"] = [editor.getPath(),editor.getCursorScreenPosition()] unless back
           if @complex
             @complex = false
-            @pathCache[atom.project.path] or= {}
-            @pathCache[atom.project.path][@uri] = ed.getPath() unless back
+            @pathCache[projectPath] or= {}
+            @pathCache[projectPath][@uri] = ed.getPath() unless back
           @modalPanel.hide()
-          editor.destroy()
+          if @new then @new = false else editor.destroy()
 
   back: ->
     editor = atom.workspaceView.getActivePaneItem()
