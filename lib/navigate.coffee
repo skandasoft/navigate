@@ -14,6 +14,10 @@ module.exports =
       title: 'New Window'
       type: 'boolean'
       default: false
+    dblclk:
+      title: 'Double Click'
+      type: 'boolean'
+      default: true
 
   activate: (state) ->
     console.log 'Project State ',state
@@ -33,11 +37,12 @@ module.exports =
         @new = true
         @forward()
     atom.workspaceView.command 'navigate:refresh', 'atom-text-editor', =>@refresh()
-    atom.workspace.observeTextEditors (editor)=>
-      view = atom.views.getView(editor)
-      view.ondblclick = =>
-        @new = atom.config.get('navigate.dblclick')
-        @forward()
+    if atom.config.get('navigate.dblclk')
+      atom.workspace.observeTextEditors (editor)=>
+        view = atom.views.getView(editor)
+        view.ondblclick = =>
+          @new = atom.config.get('navigate.dblclick')
+          @forward()
 
   refresh: ->
     ed = atom.workspace.getActiveTextEditor()
