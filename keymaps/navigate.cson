@@ -11,3 +11,7 @@
   'f2': 'navigate:forward'
   'f4': 'navigate:forward-new'
   'f3': 'navigate:back'
+  'ctrl-f1': 'navigate:browser'
+  'ctrl-f2': 'navigate:browser'
+  'ctrl-f3': 'navigate:browser'
+  'f1': 'navigate:browser'

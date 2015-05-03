@@ -1,3 +1,5 @@
+INSTALL  BROWSER-PLUS --> apm install browser-plus or check out in the packages
+
 # Jump to any file/Back(f2/f3)
 
 Jump to any file by dbl clicking(f2) on the file url/any word, even if it is not on the path and jump back(f3) with support for Node Modules. Simple!!!

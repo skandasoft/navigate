@@ -17,6 +17,10 @@
     "Jump to File",
     "Forward",
     "Drilldown",
-    "Jump"
+    "Jump",
+    "link",
+    "links",
+    "help",
+    "browser"
   ]
 }

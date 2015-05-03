@@ -26,6 +26,7 @@ class ListView extends SelectListView
     @addClass 'overlay from-top'
     @setItems items
     atom.workspaceView.append(@)
+    @focusFilterEditor()
 
   viewForItem: (item)->
     "<li>#{item}</li>"
