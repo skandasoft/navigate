@@ -33,3 +33,33 @@ Open New window - f4
 Navigating into local node modules in the same window
 
 ![localnodemoudules](https://github.com/skandasoft/navigate/blob/master/nodemodules.gif?raw=true)
+
+UPDATES
+________
+
+BrowserPlus has to be installed to take advantage of the new features
+This package help in navigating/links to html file. when you press f2 on a html file it opens up the browser
+The browser url can be provided added in the config against the keys. The default key combinations are now
+
+'F1':
+  title: 'F1 - Help'
+  type: 'string'
+  default: 'http://devdocs.io/#q=&searchterm'
+
+'CTRL-F1':
+  title: 'F1 - Help'
+  type: 'string'
+  default: 'https://www.google.com/search?q=&searchterm'
+
+'CTRL-F2':
+  title: 'Stack Overflow Search'
+  type: 'string'
+  default: 'http://stackoverflow.com/search?q=&searchterm'
+
+'CTRL-F3':
+  title: 'AtomIO Search'
+  type: 'string'
+  default: 'https://atom.io/docs/api/search/latest?q=&searchterm'
+
+  Custom keys(CTRL-F4) can be added against custom url. The word under cursor is available in the search term. So Currently any help for the key words, are provided through devdocs.
+  ![browser-plus](https://github.com/skandasoft/navigate/blob/master/help-browser-plus.gif?raw=true)

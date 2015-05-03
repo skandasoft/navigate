@@ -68,7 +68,7 @@ module.exports =
     if range
       text = ed.getTextInBufferRange(range)[1..-2]
     else
-      text = ed.getWordUnderCursor wordRegex:/[\/A-Z\.\d\\-_:]+(:\d+)?/i
+      text = ed.getWordUnderCursor wordRegex:/[\/A-Z\.\-\d\\-_:]+(:\d+)?/i
     text = text[0..-2] if text.slice(-1) is ':'
     text.trim()
 
@@ -135,9 +135,13 @@ module.exports =
         openFile()
       catch e
         console.log 'Error finding the filepath',e
-        module  = require 'module'
-        return @open([filepath],editor) if fs.statSync filepath if filepath =  module._resolveFilename @uri
-        openFile()
+        try
+          module  = require 'module'
+          return @open([filepath],editor) if fs.statSync filepath if filepath =  module._resolveFilename @uri
+          openFile()
+        catch e
+          console.log 'Error finding the filepath with module',e
+          openFile()
 
     if @uri.indexOf('http') is 0  or @uri.indexOf('https') is 0 or @uri.indexOf('localhost:') is 0
       atom.workspace.open @uri, split:split
