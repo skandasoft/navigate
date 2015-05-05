@@ -22,7 +22,7 @@ module.exports =
     @navi = {}
     atom.commands.add "atom-text-editor",'navigate:back': =>@back()
     atom.commands.add 'atom-text-editor', 'navigate:forward': =>
-      @new = atom.config.get('navigate.dblclick')
+      @new = atom.config.get('navigate.newwindow')
       @forward()
 
     atom.commands.add 'atom-text-editor', 'navigate:forward-new': =>

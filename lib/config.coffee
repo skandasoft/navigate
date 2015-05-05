@@ -1,13 +1,13 @@
 module.exports =
 
-  dblclick:
+  newwindow:
     title: 'New Window'
     type: 'boolean'
     default: false
   dblclk:
     title: 'Double Click'
     type: 'boolean'
-    default: true
+    default: false
   'F1':
     title: 'F1 - Help'
     type: 'string'
