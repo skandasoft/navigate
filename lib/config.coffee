@@ -31,4 +31,4 @@ module.exports =
   basedir:
     title: 'Base Directory'
     type: 'array'
-    # default:['../public/']
+    default:['../public/']

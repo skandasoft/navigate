@@ -73,9 +73,9 @@ module.exports =
     text.trim()
 
   forward: ->
-    editor = atom.workspace.getActiveEditor()
+    editor = atom.workspace.getActiveTextEditor()
     @uri = editor.getSelectedText()
-    line =  editor.lineTextForScreenRow editor.getCursorScreenRow()
+    line =  editor.lineTextForScreenRow editor.getCursorScreenPosition().row
     @uri = editor.getSelectedText() or @getText(editor)
     split = @getPosition()
 
@@ -83,7 +83,7 @@ module.exports =
       # check if it has require
       fpath = path.dirname editor.getPath()
       ext = path.extname editor.getPath()
-      projectPath = atom.project.getPath()
+      projectPath = atom.project.getPaths()[0]
       exists = fs.existsSync or fs.accessSync
       filename = path.basename(@uri)
 
@@ -181,7 +181,7 @@ module.exports =
           editor.save()
     atom.workspace.open url[0]
       .then (ed)=>
-        projectPath = atom.project.getPath()
+        projectPath = atom.project.getPaths()[0]
         ed.setCursorScreenPosition(url[1]) if url[1]
         @navi["#{ed.getPath()}"] = [editor.getPath(),editor.getCursorScreenPosition()] unless back
         if @complex
@@ -192,7 +192,7 @@ module.exports =
         if @new then @new = false else editor.destroy()
 
   back: ->
-    editor = atom.workspaceView.getActivePaneItem()
+    editor = atom.workspace.getActivePaneItem()
     fpath = editor.getPath()
     return unless navi = @navi[fpath]
     delete @navi[fpath]
@@ -206,7 +206,7 @@ module.exports =
   toggle: ->
 
   getPosition: ->
-    activePane = atom.workspace.paneForItem atom.workspace.getActiveEditor()
+    activePane = atom.workspace.paneForItem atom.workspace.getActiveTextEditor()
     paneAxis = activePane.getParent()
     paneIndex = paneAxis.getPanes().indexOf(activePane)
     orientation = paneAxis.orientation ? 'horizontal'
