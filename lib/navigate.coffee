@@ -39,10 +39,13 @@ module.exports =
         'navigate:browser': (evt)=> @openBrowser(evt)
 
   browserOption: (evt,text)->
-    key = evt.originalEvent.keyIdentifier
-    key = "CTRL-#{key}" if evt.originalEvent.ctrlKey
-    key = "SHIFT-#{key}" if evt.originalEvent.shiftKey
-    key = "ALT-#{key}" if evt.originalEvent.altKey
+    if evt and evt.originalEvent
+      key = evt.originalEvent.keyIdentifier
+      key = "CTRL-#{key}" if evt.originalEvent.ctrlKey
+      key = "SHIFT-#{key}" if evt.originalEvent.shiftKey
+      key = "ALT-#{key}" if evt.originalEvent.altKey
+    else
+      key = "CTRL-F1"
     @uri = atom.config.get("navigate.#{key}")
     @uri = @uri.replace('&searchterm',text)
     split = @getPosition()
