@@ -1,5 +1,6 @@
 # http://www.skandasoft.com/
 path = require 'path'
+
 {CompositeDisposable,Point, Range} = require 'atom'
 fs = require 'fs'
 findup = require 'findup-sync'
@@ -91,7 +92,8 @@ module.exports =
       filename = path.basename(@uri)
 
       globSearch = =>
-        glob "**/*#{filename}*",{cwd:projectPath,stat:false,nocase:true,nodir:true}, (err,files)=>
+        ignore = atom.config.get('navigate.ignore') or []
+        glob "**/*#{filename}*",{cwd:projectPath,stat:false,nocase:true,nodir:true,ignore:ignore}, (err,files)=>
           if err or not files.length
             fpaths = findup filename,{cwd:projectPath,nocase:true}
             if fpaths
@@ -108,23 +110,36 @@ module.exports =
 
       openFile = =>
         try
+          if ofname = @pathCache[projectPath]?[@uri]
+            @open([ofname],editor)
+            return
+
           baseDir = atom.config.get('navigate.basedir') or []
+          fileSrc = []
+          if @uri[0] is '/' or @uri[0] is '\\'
+            fileSrc.unshift fpath+@uri
+            fileSrc.unshift fpath+@uri+ext unless path.extname @uri
+          else
+            fileSrc.unshift projectPath+'/'+@uri
+            fileSrc.unshift projectPath+'/'+@uri+ext unless path.extname @uri
+
           for i,dir of baseDir
-            baseDir[i] = fpath+'/'+ dir+'/'+@uri
-          baseDir.unshift fpath+'/'+@uri
-          baseDir.unshift fpath+'/'+@uri+ext unless path.extname @uri
-          for url in baseDir
+            if @uri[0] is '/' or @uri[0] is '\\'
+              fileSrc.unshift fpath+'/'+ dir+'/'+@uri
+            else
+              fileSrc.unshift projectPath+'/'+ dir+'/'+@uri
+
+          for url in fileSrc
             if exists url
               @open([url],editor)
               return
 
           filename = path.basename(@uri)
-          if ofname = @pathCache[projectPath]?[@uri]
-            @open([ofname],editor)
-          else
-            @complex = true
-            globSearch()
-
+          # else
+          @complex = true
+          globSearch()
+        catch e
+          console.log 'Error finding the filepath',e
       try
         @modalPanel.show()
         if line.includes 'require'
@@ -134,7 +149,7 @@ module.exports =
             return atom.workspace.open url, split:split
 
           filepath = resolve.sync(@uri, basedir:fpath,extensions:['.js','.coffee'])
-          @open([filepath],editor) if fs.statSync filepath
+          return @open([filepath],editor) if fs.statSync filepath
         openFile()
       catch e
         console.log 'Error finding the filepath',e
@@ -146,7 +161,7 @@ module.exports =
           console.log 'Error finding the filepath with module',e
           openFile()
 
-    if @uri.indexOf('http') is 0  or @uri.indexOf('https') is 0 or @uri.indexOf('localhost:') is 0
+    if @uri.indexOf('http:') is 0  or @uri.indexOf('https:') is 0 or @uri.indexOf('localhost:') is 0
       atom.workspace.open @uri, split:split
     else
       open(@uri)

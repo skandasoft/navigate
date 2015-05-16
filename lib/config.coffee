@@ -31,4 +31,9 @@ module.exports =
   basedir:
     title: 'Base Directory'
     type: 'array'
-    default:['../public/']
+    default:['/public/']
+
+  ignore:
+    title: 'Ignore Pattern/Files(glob Pattern)'
+    type: 'array'
+    default: '**/*.css'

@@ -32,7 +32,10 @@ class ListView extends SelectListView
     "<li>#{item}</li>"
 
   confirmed: (item)->
-    @cancel()
     @cb(item)
+    @remove()
+
+  cancelled: ->
+    @remove()
 
 module.exports = { NavigateView,ListView}
