@@ -7,11 +7,18 @@
 
 # For more detailed documentation see
 # https://atom.io/docs/latest/advanced/keymaps
-'.platform-win32 atom-text-editor:not(.mini)':
+'atom-text-editor:not(.mini)':
   'f2': 'navigate:forward'
   'f4': 'navigate:forward-new'
   'f3': 'navigate:back'
+  'f1': 'navigate:browser'
+
+'.platform-win32 atom-text-editor:not(.mini)':
   'ctrl-f1': 'navigate:browser'
   'ctrl-f2': 'navigate:browser'
   'ctrl-f3': 'navigate:browser'
-  'f1': 'navigate:browser'
+
+'.platform-darwin atom-text-editor:not(.mini)':
+  'cmd-f1': 'navigate:browser'
+  'cmd-f2': 'navigate:browser'
+  'cmd-f3': 'navigate:browser'
