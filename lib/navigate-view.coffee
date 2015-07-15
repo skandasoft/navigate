@@ -23,9 +23,10 @@ class NavigateView
 class ListView extends SelectListView
   initialize: (items,@cb)->
     super
-    @addClass 'overlay from-top'
+    # @addClass 'overlay from-top'
     @setItems items
-    atom.workspaceView.append(@)
+    # atom.workspaceView.append(@)
+    atom.workspace.addModalPanel item:@
     @focusFilterEditor()
 
   viewForItem: (item)->
