@@ -48,9 +48,10 @@ module.exports =
     else
       key = "CTRL-F1"
     @uri = atom.config.get("navigate.#{key}")
-    @uri = @uri.replace('&searchterm',text)
-    split = @getPosition()
-    atom.workspace.open @uri, split:split
+    if @uri
+      @uri = @uri.replace('&searchterm',text)
+      split = @getPosition()
+      atom.workspace.open @uri, split:split
 
   openBrowser: (evt)->
     # try get text directly

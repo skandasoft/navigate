@@ -18,6 +18,10 @@
 
 
 '.platform-darwin atom-text-editor:not(.mini)':
+  'f2': 'navigate:forward'
+  'f4': 'navigate:forward-new'
+  'f3': 'navigate:back'
+  'f1': 'navigate:browser'
   'cmd-f1': 'navigate:browser'
   'cmd-f2': 'navigate:browser'
   'cmd-f3': 'navigate:browser'
