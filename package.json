@@ -9,9 +9,9 @@
     "atom": ">0.50.0"
   },
   "dependencies": {
-    "findup-sync": "~0.2.1",
-    "glob": "~4.3.5",
-    "resolve": "~1.1.0",
+    "findup-sync": "^0.2.1",
+    "glob": "^4.3.5",
+    "resolve": "^1.1.0",
     "atom-space-pen-views": "^2.0.3"
   },
   "keywords": [
