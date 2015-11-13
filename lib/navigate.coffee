@@ -61,7 +61,8 @@ module.exports =
 
   refresh: ->
     ed = atom.workspace.getActiveTextEditor()
-    projectPath = atom.project.getPath()
+    projectPath = atom.project.getPaths()[0]
+    return unless projectPath
     if text = ed?.getSelectedText()
       delete @pathCache[projectPath]?[text]
     else
