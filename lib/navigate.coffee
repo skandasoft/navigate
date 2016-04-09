@@ -1,23 +1,15 @@
 # http://www.skandasoft.com/
-path = require 'path'
-
-{CompositeDisposable,Point, Range} = require 'atom'
 fs = require 'fs'
-findup = require 'findup-sync'
-glob = require 'glob'
-resolve = require 'resolve'
-
-{NavigateView,ListView} = require './navigate-view'
 module.exports =
-  navigateView: null
   subscriptions: null
   config: require './config'
   activate: (state) ->
-    console.log 'Project State ',state
+    {CompositeDisposable} = require 'atom'
     @pathCache = state['pathCache'] or {}
     @new = false
     # Events subscribed to in atom's system can be easily cleaned up with a CompositeDisposable
     @subscriptions = new CompositeDisposable
+    {NavigateView} = require './navigate-view'
     @loading = new NavigateView()
     @modalPanel = atom.workspace.addModalPanel item:@loading.getElement(), visible:false
     @navi = {}
@@ -86,6 +78,7 @@ module.exports =
     split = @getPosition()
 
     open = =>
+      path = require 'path'
       # check if it has require
       fpath = path.dirname editor.getPath()
       ext = path.extname editor.getPath()
@@ -94,6 +87,8 @@ module.exports =
       filename = path.basename(@uri)
 
       globSearch = =>
+        findup = require 'findup-sync'
+        glob = require 'glob'
         ignore = atom.config.get('navigate.ignore') or []
         glob "**/*#{filename}*",{cwd:projectPath,stat:false,nocase:true,nodir:true,ignore:ignore}, (err,files)=>
           if err or not files.length
@@ -111,6 +106,8 @@ module.exports =
             @matchFile(@uri,ext,files,editor)
 
       openFile = =>
+        path = require 'path'
+        resolve = require 'resolve'
         try
           if ofname = @pathCache[projectPath]?[@uri]
             @open([ofname],editor)
@@ -186,6 +183,7 @@ module.exports =
           if files.length is 1
             @open(files,editor)
           else
+            {ListView} = require './navigate-view'
             new ListView files, (file)=>
               @open([file],editor)
 
@@ -233,4 +231,4 @@ module.exports =
     if orientation is 'horizontal'
       if  paneIndex is 0 then 'right' else 'left'
     else
-      if  paneIndex is 0 then 'down' else 'top'
+      if  paneIndex is 0 then 'down' else 'up'

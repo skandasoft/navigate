@@ -1,4 +1,4 @@
-{View,SelectListView} = require("atom-space-pen-views")
+{SelectListView} = require("atom-space-pen-views")
 class NavigateView
   constructor: (serializeState) ->
     # Create root element
