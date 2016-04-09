@@ -107,7 +107,6 @@ module.exports =
 
       openFile = =>
         path = require 'path'
-        resolve = require 'resolve'
         try
           if ofname = @pathCache[projectPath]?[@uri]
             @open([ofname],editor)
@@ -140,6 +139,7 @@ module.exports =
         catch e
           console.log 'Error finding the filepath',e
       try
+        resolve = require 'resolve'
         @modalPanel.show()
         if line.includes 'require'
           if resolve.isCore(@uri)
