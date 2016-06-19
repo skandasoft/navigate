@@ -1,5 +1,6 @@
-# http://www.skandasoft.com/
+# http://www.skandasoft.com//
 fs = require 'fs'
+{Range} = require 'atom'
 module.exports =
   subscriptions: null
   config: require './config'
@@ -7,6 +8,10 @@ module.exports =
     {CompositeDisposable} = require 'atom'
     @pathCache = state['pathCache'] or {}
     @new = false
+    requires = atom.config.get('navigate.require')
+    req = require(requires)
+    for key,value of req
+      atom.config.set("navigate.#{key}",value)
     # Events subscribed to in atom's system can be easily cleaned up with a CompositeDisposable
     @subscriptions = new CompositeDisposable
     {NavigateView} = require './navigate-view'
@@ -43,7 +48,10 @@ module.exports =
     if @uri
       @uri = @uri.replace('&searchterm',text)
       split = @getPosition()
-      atom.workspace.open @uri, split:split
+      opt = {split:split, searchAllPanes:true}
+      if atom.config.get('navigate.openInSameWindow')
+        opt.openInSameWindow = true
+      atom.workspace.open @uri, opt
 
   openBrowser: (evt)->
     # try get text directly
@@ -62,19 +70,52 @@ module.exports =
 
   getText: (ed)->
     cursor = ed.getCursors()[0]
-    range = ed.displayBuffer.bufferRangeForScopeAtPosition '.string.quoted',cursor.getBufferPosition()
-    if range
-      text = ed.getTextInBufferRange(range)[1..-2]
-    else
+    # range = ed.displayBuffer.bufferRangeForScopeAtPosition '.string.quoted',cursor.getBufferPosition()
+    # if range
+    #   text = ed.getTextInBufferRange(range)[1..-2]
+    rn = @getQuoteRange(cursor,ed)
+    if rn
+      text = ed.getTextInBufferRange(rn)
+    unless text
       text = ed.getWordUnderCursor wordRegex:/[\/A-Z\.\-\d\\-_:]+(:\d+)?/i
-    text = text[0..-2] if text.slice(-1) is ':'
-    text.trim()
+    if text
+      text = text[0..-2] if text.slice(-1) is ':'
+      text.trim()
+
+  getQuoteRange: (cursor,ed)->
+    closing = @getClosingQuotePosition(cursor,ed)
+    return false unless closing?
+    opening = @getOpeningQuotePosition(cursor,ed)
+    return false unless opening?
+    new Range opening, closing
+
+  getOpeningQuotePosition: (cursor,ed) ->
+    range = cursor.getCurrentLineBufferRange()
+    range.end.column = cursor.getScreenPosition().column
+    quote = false
+    ed.buffer.backwardsScanInRange /[`|'|"]/g, range, (obj) =>
+      return false unless @quoteType
+      obj.stop() if obj.matchText is @quoteType
+      quote = obj.range.end
+    quote
+
+  getClosingQuotePosition: (cursor,ed) ->
+    range = cursor.getCurrentLineBufferRange()
+    range.start.column = cursor.getScreenPosition().column
+    quote = false
+    delete @quoteType
+    ed.buffer.scanInRange /[`|'|"]/g, range, (obj) =>
+      @quoteType = obj.matchText
+      obj.stop()
+      quote = obj.range.start
+    quote
 
   forward: ->
     editor = atom.workspace.getActiveTextEditor()
     @uri = editor.getSelectedText()
     line =  editor.lineTextForScreenRow editor.getCursorScreenPosition().row
     @uri = editor.getSelectedText() or @getText(editor)
+    return unless @uri
     split = @getPosition()
 
     open = =>
@@ -115,17 +156,24 @@ module.exports =
           baseDir = atom.config.get('navigate.basedir') or []
           fileSrc = []
           if @uri[0] is '/' or @uri[0] is '\\'
+            if fpath.startsWith(projectPath)
+              fileSrc.unshift projectPath+'/'+@uri
+              fileSrc.unshift projectPath+'/'+@uri+ext unless path.extname @uri
+            else
+              fileSrc.unshift fpath+"/../"+@uri
+              fileSrc.unshift fpath+"/../"+@uri+ext unless path.extname @uri
+          else
             fileSrc.unshift fpath+@uri
             fileSrc.unshift fpath+@uri+ext unless path.extname @uri
-          else
-            fileSrc.unshift projectPath+'/'+@uri
-            fileSrc.unshift projectPath+'/'+@uri+ext unless path.extname @uri
 
           for i,dir of baseDir
             if @uri[0] is '/' or @uri[0] is '\\'
-              fileSrc.unshift fpath+'/'+ dir+'/'+@uri
+              if fpath.startsWith(projectPath)
+                fileSrc.unshift projectPath+'/'+ dir+'/'+@uri
+              else
+                fileSrc.unshift fpath+'/../'+ dir+'/'+@uri
             else
-              fileSrc.unshift projectPath+'/'+ dir+'/'+@uri
+              fileSrc.unshift fpath+'/'+ dir+'/'+@uri
 
           for url in fileSrc
             if exists url
@@ -145,7 +193,7 @@ module.exports =
           if resolve.isCore(@uri)
             url = "https://github.com/joyent/node/blob/master/lib/#{@uri}.js"
             @modalPanel.hide()
-            return atom.workspace.open url, split:split
+            return atom.workspace.open url, {split:split, searchAllPanes:true}
 
           filepath = resolve.sync(@uri, basedir:fpath,extensions:['.js','.coffee'])
           return @open([filepath],editor) if fs.statSync filepath
@@ -161,7 +209,7 @@ module.exports =
           openFile()
 
     if @uri.indexOf('http:') is 0  or @uri.indexOf('https:') is 0 or @uri.indexOf('localhost:') is 0
-      atom.workspace.open @uri, split:split
+      atom.workspace.open @uri, {split:split, searchAllPanes:true}
     else
       open(@uri)
 

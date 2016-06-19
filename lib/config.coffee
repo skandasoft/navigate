@@ -8,11 +8,19 @@ module.exports =
     title: 'Double Click'
     type: 'boolean'
     default: false
+  openInSameWindow:
+    title: 'Open Results in Same Window'
+    type: 'boolean'
+    default: true
   'F1':
     title: 'F1 - Help'
     type: 'string'
     default: 'http://devdocs.io/#q=&searchterm'
 
+  'require':
+    title: 'config keymap'
+    type: 'string'
+    default: './keymap.coffee'
   'CTRL-F1':
     title: 'F1 - Help'
     type: 'string'

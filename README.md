@@ -63,3 +63,15 @@ The browser url can be provided added in the config against the keys. The defaul
 
   Custom keys(CTRL-F4) can be added against custom url. The word under cursor is available in the search term. So Currently any help for the key words, are provided through devdocs.
   ![browser-plus](https://github.com/skandasoft/navigate/blob/master/help-browser-plus.gif?raw=true)
+
+
+  UPDATES: 06/18/2016
+
+  Ablity to add custom key map..
+  you can specify the path for custom keymap in the config settings.
+  An example setting file/filepath is given -> keymap.coffee
+  use module.exports followed by key/value pair of keymap to search site url
+  and the file could you any where in the system for eg in window...c:/keymap.coffee
+  update in settings for require to c:/keymap.coffee
+  and this file could contain the same keymap as the default config.coffee keymap..
+  your key map will be given the preference
