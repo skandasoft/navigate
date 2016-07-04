@@ -11,7 +11,7 @@ module.exports =
     requires = atom.config.get('navigate.require')
     req = require(requires)
     for key,value of req
-      atom.config.set("navigate.#{key}",value)
+      atom.config.set("navigate.#{key}",value) if value
     # Events subscribed to in atom's system can be easily cleaned up with a CompositeDisposable
     @subscriptions = new CompositeDisposable
     {NavigateView} = require './navigate-view'
