@@ -1,2 +1,2 @@
 module.exports =
-  'F1': 'http://www.bing.com/search?q=&searchterm'
+  'F1': 'http://devdocs.io/#q=&searchterm'

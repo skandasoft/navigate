@@ -74,7 +74,7 @@ module.exports =
     # if range
     #   text = ed.getTextInBufferRange(range)[1..-2]
     rn = @getQuoteRange(cursor,ed)
-    if rn
+    if rn and rn.end.row is rn.start.row
       text = ed.getTextInBufferRange(rn)
     unless text
       text = ed.getWordUnderCursor wordRegex:/[\/A-Z\.\-\d\\-_:]+(:\d+)?/i
