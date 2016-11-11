@@ -1,7 +1,7 @@
 {
   "name": "navigate",
   "main": "./lib/navigate",
-  "version": "0.1.16",
+  "version": "0.1.17",
   "description": "Jump to any file/Back(f2/f3)",
   "repository": "https://github.com/skandasoft/navigate",
   "license": "MIT",
