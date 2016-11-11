@@ -21,6 +21,7 @@ module.exports =
     title: 'config keymap'
     type: 'string'
     default: './keymap.coffee'
+
   'CTRL-F1':
     title: 'F1 - Help'
     type: 'string'

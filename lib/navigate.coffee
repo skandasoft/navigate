@@ -11,7 +11,12 @@ module.exports =
     requires = atom.config.get('navigate.require')
     req = require(requires)
     for key,value of req
+      param = {}
+      param['atom-text-editor'] = {}
+      param['atom-text-editor'][key] = "navigate:browser"
+      atom.keymaps.add "navigate", param
       atom.config.set("navigate.#{key}",value) if value
+
     # Events subscribed to in atom's system can be easily cleaned up with a CompositeDisposable
     @subscriptions = new CompositeDisposable
     {NavigateView} = require './navigate-view'
@@ -45,6 +50,9 @@ module.exports =
     else
       key = "CTRL-F1"
     @uri = atom.config.get("navigate.#{key}")
+    @uri = atom.config.get("navigate.#{key.toUpperCase()}") unless @uri
+    @uri = atom.config.get("navigate.#{key.toLowerCase()}") unless @uri
+
     if @uri
       @uri = @uri.replace('&searchterm',text)
       split = @getPosition()
