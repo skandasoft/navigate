@@ -43,7 +43,7 @@ module.exports =
 
   browserOption: (evt,text)->
     if evt and evt.originalEvent
-      key = evt.originalEvent.keyIdentifier
+      key = evt.originalEvent.keyIdentifier || evt.originalEvent.key
       key = "CTRL-#{key}" if evt.originalEvent.ctrlKey
       key = "SHIFT-#{key}" if evt.originalEvent.shiftKey
       key = "ALT-#{key}" if evt.originalEvent.altKey
